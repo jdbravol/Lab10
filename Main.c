@@ -3,7 +3,7 @@
 #include "ScreenOut.h"
 #include "tach.h"
 #include "PLL.h"
-#include "../inc/tm4c123gh6pm.h"
+#include "tm4c123gh6pm.h"
 
 
 void EnableInterrupts(void);

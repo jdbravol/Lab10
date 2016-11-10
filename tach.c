@@ -24,7 +24,7 @@
 
 // external signal connected to PB6 (T0CCP0) (trigger on rising edge)
 #include <stdint.h>
-#include "../inc/tm4c123gh6pm.h"
+#include "tm4c123gh6pm.h"
 #include "PLL.h"
 
 #define NVIC_EN0_INT19          0x00080000  // Interrupt 19 enable
