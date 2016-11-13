@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
 #include "PLL.h"
+#include "tach.h"
 
 #define NVIC_EN0_INT19          0x00080000  // Interrupt 19 enable
 #define PF2                     (*((volatile uint32_t *)0x40025010))
