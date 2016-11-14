@@ -51,10 +51,11 @@ void EnableInterrupts(void);  // Enable interrupts
 long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
-
+volatile uint32_t dc = 30000; //duty cycle
+volatile uint32_t current_speed = 0;
 uint32_t Period;              // (1/clock) units
 uint32_t First;               // Timer0A first edge
-int32_t Done;                 // set each rising
+int32_t Done = 0;                 // set each rising
 // max period is (2^24-1)*12.5ns = 209.7151ms
 // min period determined by time to run ISR, which is about 1us
 void PeriodMeasure_Init(void){
@@ -88,7 +89,7 @@ void PeriodMeasure_Init(void){
   TIMER0_CTL_R |= TIMER_CTL_TAEN;  // enable timer0A 16-b, +edge timing, interrupts
                                    // Timer0A=priority 2
   NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0x40000000; // top 3 bits
-  NVIC_EN0_R = NVIC_EN0_INT19;     // enable interrupt 19 in NVIC
+  NVIC_EN0_R |= NVIC_EN0_INT19;     // enable interrupt 19 in NVIC
 }
 void Timer0A_Handler(void){
   PF2 = PF2^0x04;  // toggle PF2
@@ -96,21 +97,28 @@ void Timer0A_Handler(void){
   TIMER0_ICR_R = TIMER_ICR_CAECINT;// acknowledge timer0A capture match
   Period = (First - TIMER0_TAR_R)&0xFFFFFF;// 24 bits, 12.5ns resolution
   First = TIMER0_TAR_R;            // setup for next
-  Done = 1;
+	Done = 1;
   PF2 = PF2^0x04;  // toggle PF2
 }
 
 void setSpeed(uint32_t speed) {
-	uint32_t cycles = 20000000/speed;
-	uint32_t dc = getDuty();
-	float actual = Period/80000000;
-	int freq = 1/actual;
-	ST7735_sDecOut3(freq);
-	float difference = Period/cycles;
-	dc = (difference*dc);
-	if (dc > 40000) {dc = 40000;}
+	current_speed = 2000000000/Period;
+	outputTemp(current_speed);
+	int32_t err = speed - current_speed;
+	dc += (100*err)/64;
+	if (dc < 20000) {
+		dc = 20000;
+	}
+	if (dc > 48000) {
+		dc = 48000;
+	}
 	PWM0B_Duty(dc);
+	Done = 0;
 }
 
 int isDone(void) {return Done;}
+
+void drawSpeed(void) {
+	outputTemp(current_speed);
+}
 
