@@ -25,7 +25,7 @@
  http://users.ece.utexas.edu/~valvano/
  */
 
-
+#include <stdint.h>
 // period is 16-bit number of PWM clock cycles in one period (3<=period)
 // period for PB6 and PB7 must be the same
 // duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
@@ -52,3 +52,4 @@ void PWM0B_Init(uint16_t period, uint16_t duty);
 // duty is number of PWM clock cycles output is high  (2<=duty<=period-1)
 void PWM0B_Duty(uint16_t duty);
 
+uint32_t getDuty(void);

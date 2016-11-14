@@ -24,9 +24,12 @@
 
 // external signal connected to PB6 (T0CCP0) (trigger on rising edge)
 #include <stdint.h>
+#include <stdlib.h>
 #include "tm4c123gh6pm.h"
 #include "tach.h"
 #include "PLL.h"
+#include "PWM.h"
+#include "Fixed.h"
 
 #define NVIC_EN0_INT19          0x00080000  // Interrupt 19 enable
 #define PF2                     (*((volatile uint32_t *)0x40025010))
@@ -96,4 +99,18 @@ void Timer0A_Handler(void){
   Done = 1;
   PF2 = PF2^0x04;  // toggle PF2
 }
+
+void setSpeed(uint32_t speed) {
+	uint32_t cycles = 20000000/speed;
+	uint32_t dc = getDuty();
+	float actual = Period/80000000;
+	int freq = 1/actual;
+	ST7735_sDecOut3(freq);
+	float difference = Period/cycles;
+	dc = (difference*dc);
+	if (dc > 40000) {dc = 40000;}
+	PWM0B_Duty(dc);
+}
+
+int isDone(void) {return Done;}
 

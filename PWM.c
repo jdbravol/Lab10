@@ -103,3 +103,4 @@ void PWM0B_Duty(uint16_t duty){
   PWM0_0_CMPB_R = duty - 1;             // 6) count value when output rises
 }
 
+uint32_t getDuty(void) {return PWM0_0_CMPB_R;}
