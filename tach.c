@@ -22,11 +22,11 @@
  http://users.ece.utexas.edu/~valvano/
  */
 
-// external signal connected to PB7 (T0CCP1) (trigger on rising edge)
+// external signal connected to PB6 (T0CCP0) (trigger on rising edge)
 #include <stdint.h>
 #include "tm4c123gh6pm.h"
-#include "PLL.h"
 #include "tach.h"
+#include "PLL.h"
 
 #define NVIC_EN0_INT19          0x00080000  // Interrupt 19 enable
 #define PF2                     (*((volatile uint32_t *)0x40025010))
@@ -60,12 +60,12 @@ void PeriodMeasure_Init(void){
                                    // allow time to finish activating
   First = 0;                       // first will be wrong
   Done = 0;                        // set on subsequent
-  GPIO_PORTB_DIR_R &= ~0x80;       // make PB6 in
-  GPIO_PORTB_AFSEL_R |= 0x80;      // enable alt funct on PB6/T0CCP0
-  GPIO_PORTB_DEN_R |= 0x80;        // enable digital I/O on PB6
-                                   // configure PB6 as T0CCP1
-  GPIO_PORTB_PCTL_R = (GPIO_PORTB_PCTL_R&0x0FFFFFFF)+0x70000000;
-  GPIO_PORTB_AMSEL_R &= ~0x80;     // disable analog functionality on PB6
+  GPIO_PORTB_DIR_R &= ~0x40;       // make PB6 in
+  GPIO_PORTB_AFSEL_R |= 0x40;      // enable alt funct on PB6/T0CCP0
+  GPIO_PORTB_DEN_R |= 0x40;        // enable digital I/O on PB6
+                                   // configure PB6 as T0CCP0
+  GPIO_PORTB_PCTL_R = (GPIO_PORTB_PCTL_R&0xF0FFFFFF)+0x07000000;
+  GPIO_PORTB_AMSEL_R &= ~0x40;     // disable analog functionality on PB6
   GPIO_PORTF_DIR_R |= 0x04;        // make PF2 out (PF2 built-in blue LED)
   GPIO_PORTF_AFSEL_R &= ~0x04;     // disable alt funct on PF2
   GPIO_PORTF_DEN_R |= 0x04;        // enable digital I/O on PF2
@@ -96,3 +96,4 @@ void Timer0A_Handler(void){
   Done = 1;
   PF2 = PF2^0x04;  // toggle PF2
 }
+

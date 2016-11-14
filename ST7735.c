@@ -90,7 +90,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include "ST7735.h"
+#include "../EE445L/Lab1/ST7735.h"
 #include "tm4c123gh6pm.h"
 
 // 16 rows (0 to 15) and 21 characters (0 to 20)
@@ -1565,7 +1565,7 @@ void ST7735_SetTextColor(uint16_t color){
   StTextColor = color;
 }
 // Print a character to ST7735 LCD.
-int fputc(int ch, FILE *f){
+int fputc(int ch, FILE *F){
   ST7735_OutChar(ch);
   return 1;
 }
