@@ -14,6 +14,7 @@ void WaitForInterrupt(void);
 int main(void){           
   PLL_Init(Bus80MHz);              // 80 MHz clock
   PeriodMeasure_Init();            // initialize 24-bit timer0A in capture mode
+	PWM0A_Init();
   while(1){
   }
 }
